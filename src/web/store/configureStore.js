@@ -1,22 +1,20 @@
-import { applyMiddleware, compose, createStore } from 'redux'
-import { createEpicMiddleware } from 'redux-observable'
-import rootEpic from './epics'
-import rootReducer from './reducers'
+import { createStore, applyMiddleware } from 'redux'
+import createSagaMiddleware from 'redux-saga'
+import history from './history'
+import createReducers from './reducers'
+import rootSaga from './sagas'
 
-const epicMiddleware = createEpicMiddleware()
+
+const sagaMiddleware = createSagaMiddleware()
 
 const configureStore = () => {
-  const composeEnhancers =
-    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
   const store = createStore(
-    rootReducer,
-    composeEnhancers(
-      applyMiddleware(epicMiddleware)
-    )
+    createReducers(history),
+    applyMiddleware(sagaMiddleware)
   )
 
-  epicMiddleware.run(rootEpic)
+  sagaMiddleware.run(rootSaga)
 
   return store
 }

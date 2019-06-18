@@ -1,22 +1,27 @@
-import React from 'react'
-import { Router, Switch, Route } from 'react-router-dom'
-import Home from './main/components/'
-import Resume from './Resume/components'
-// import Post from '../containers/addPost'
+import React, { Suspense } from 'react'
+import { Switch, Route } from 'react-router-dom'
+import { ConnectedRouter } from 'connected-react-router'
+import Home from './components/main'
+import Resume from './components/Resume'
+import Login from './components/Login'
+import Register from './components/Register'
+import User from './components/User'
 import history from '../store/history'
-// import Article from '../containers/article'
-// import Edit from '../containers/editPost'
+// import { I18nextProvider } from 'react-i18next'
 
+const Loader = () => <div>loading...</div>
 const App = () => (
-  <Router history={history}>
-    <Switch>
-      <Route exact path = "/" component = {Home} />
-      <Route path = "/resume" component = {Resume} />
-      {/* <Route path="/post" component={Post} />
-      <Route path="/article/:id/edit" component={Edit} />
-      <Route path="/article/:id" component={Article} /> */}
-    </Switch>
-  </Router>
+  <Suspense fallback={<Loader/>}>
+    <ConnectedRouter history={history}>
+      <Switch>
+        <Route exact path = "/" component = {Home} />
+        <Route path = "/resume" component = {Resume} />
+        <Route path = "/login" component = {Login} />
+        <Route path = "/register" component = {Register} />
+        <Route path = "/information" component = {User} />
+      </Switch>
+    </ConnectedRouter>
+  </Suspense>
 )
 
 export default App

@@ -1,23 +1,35 @@
 {
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true
+  },
   "extends": ["standard", "plugin:react"],
+  "globals": {
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
+  },
   "quotes": [2, "single"],
   "react/prop-types": [
     "enabled",
     { "ignore": "ignore", "customValidators": "customValidator" }
   ],
-  "globals": { "fetch": false },
-  "env": {
-    "browser": true,
-    "node": true
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 2018,
+    "sourceType": "module"
   },
+  "plugins": [
+    "react",
+    "prettier",
+    "react-hooks"
+  ],
   "rules": {
     "linebreak-style": 0,
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn"
-  },
-  "plugins": [
-    "prettier",
-    "react-hooks"
-  ]
+  }
 }
