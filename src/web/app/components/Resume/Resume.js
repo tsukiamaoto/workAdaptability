@@ -85,7 +85,7 @@ const Resume = props => {
   const { loading, error, payload, loadResume } = props
 
   useEffect(() =>{
-    loadResume()
+    // loadResume()
   },[])
   if(loading)
     return(<span>Loading...</span>)
@@ -100,7 +100,7 @@ const Resume = props => {
           <Box display="flex" className={classes.intro} flexDirection='column' >
             <Box display="flex" className={classes.person}  width='100%' justifyContent="center">
               <img
-                src={require('../../../assets/person.svg')}
+                // src={require('../../../assets/person.svg')}
                 alt="person"
                 width='200'
                 height='150'
