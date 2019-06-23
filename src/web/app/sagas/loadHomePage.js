@@ -3,9 +3,10 @@ import * as actions from '../actions'
 import * as types from '../actions/types'
 import api from '../services'
 
-function* loadHomePage(){
+function* loadHomePage(action){
+  const page = action.payload
   try {
-    const jobs = yield call(api.job.fetchAllJobs)
+    const jobs = yield call(api.job.fetchJobs,page)
     yield put(actions.loadHomePage.success(jobs))
   } catch(err){
     yield put(actions.loadHomePage.failure(err.message))
@@ -14,8 +15,8 @@ function* loadHomePage(){
 
 function* watchLoadHomePage() {
   while(true){
-    yield take(types.HOME_REQUEST)
-    yield call(loadHomePage)
+    const action = yield take(types.HOME_REQUEST)
+    yield call(loadHomePage,action)
   }
 }
 
@@ -36,8 +37,26 @@ function* watchJobPagination() {
   }
 }
 
+function* queryJob(action) {
+  const payload = action.payload
+  try {
+    const jobs = yield call(api.job.queryJob,payload)
+    yield put(actions.queryJob.success(jobs))
+  } catch (err) {
+    yield put(actions.queryJob.failure(err.message))
+  }
+}
+
+function* watchQueryJob() {
+  while(true){
+    const action = yield take(types.JOBS_QUERY)
+    yield call(queryJob,action)
+  }
+}
+
 export default [
   fork(watchLoadHomePage),
-  fork(watchJobPagination)
+  fork(watchJobPagination),
+  fork(watchQueryJob)
 ]
 

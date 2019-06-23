@@ -1,7 +1,7 @@
 import { createAction } from 'redux-actions'
 import * as types from './types'
 
-const loadHomePage = createAction(types.HOME_REQUEST, payload => undefined)
+const loadHomePage = createAction(types.HOME_REQUEST, payload => payload)
 loadHomePage.success = createAction(types.HOME_SUCCESS, response => response)
 loadHomePage.failure = createAction(types.HOME_FAILURE, error => error)
 
@@ -16,6 +16,10 @@ login.failure = createAction(types.LOGIN_FAILURE, error => error)
 const register = createAction(types.REGISTER_REQUEST, user => user)
 register.success = createAction(types.REGISTER_SUCCESS, response => response)
 register.failure = createAction(types.REGISTER_FAILURE, error => error)
+
+const queryJob = createAction(types.JOBS_QUERY, query => query)
+queryJob.success = createAction(types.JOBS_QUERY_SUCCESS, response => response)
+queryJob.failure = createAction(types.JOBS_QUERY_FAILURE, error => error)
 
 const fetchJob = createAction(types.JOBS_FETCH, options => options)
 fetchJob.request = createAction(types.JOBS_REQUEST, payload => undefined)
@@ -42,6 +46,7 @@ export {
   pagination,
   register,
   fetchJob,
+  queryJob,
   updateResume,
   fetchResume,
   fetchInfromation,

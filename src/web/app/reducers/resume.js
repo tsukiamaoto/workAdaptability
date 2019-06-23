@@ -8,7 +8,6 @@ const initialState = {
 }
 
 const resume = (state = initialState, action) => {
-  console.log(action)
   switch(action.type){
     case types.RESUME_UPDATE_REQUEST:
       return {

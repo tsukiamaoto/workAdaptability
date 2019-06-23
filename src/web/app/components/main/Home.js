@@ -10,6 +10,7 @@ import Table from './Table'
 import Pagination from 'material-ui-flat-pagination'
 import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
+import queryString from 'query-string';
 
 const contentTop = 85
 const useStyles = makeStyles(theme => ({
@@ -42,14 +43,22 @@ const useStyles = makeStyles(theme => ({
 
 const Home = props => {
   const classes= useStyles()
-  const {loading, error, payload } = props
-  const {pagination,loadPage} = props
-  const {jobs, pages,currentPage} = payload
+  const {loading, error, payload,loadPage, history, queryJob } = props
+  const {jobs, pages} = payload
   const [value, setValue] = useState(0)
+  const [isLoad, setIsLoad] = useState(false)
+  const [state, setState] = useState()
+  const [query, setQuery] = useState('')
   const { t, i18n } = useTranslation()
+
   useEffect(() => {
-    loadPage()
-  },[])
+    const page = queryString.parse(history.location.search).page
+    if(query && query.length)
+      queryJob({q: query,page: page})
+    else
+      loadPage(page)
+    setIsLoad(false)
+  },[isLoad,query])
 
   const handleTabsChanged = (event, newValue) => {
     setValue(newValue);
@@ -58,8 +67,8 @@ const Home = props => {
     const perPage = 10
 
     const page = offset / perPage + 1
-    console.log(page)
-    pagination(page)
+    history.push(`?page=${page}`)
+    setIsLoad(true)
   }
 
   if(loading){
@@ -70,7 +79,7 @@ const Home = props => {
     return (
       <div className={classes.root}>
         <div className={classes.content}>
-          <Appbar/>
+          <Appbar queryJob={setQuery}/>
           <Box display='flex' flexDirection='column'>
             <Box dispaly='flex' height={contentTop} />
             <Box display='flex'>
@@ -93,8 +102,8 @@ const Home = props => {
                 reduced
                 size='large'
                 limit={10}
-                offset={(currentPage === 1)? 0: (currentPage - 1) * 10}
-                total={pages}
+                offset={(pages.current === 1)? 0: (pages.current - 1) * 10}
+                total={pages.total}
                 onClick={handlePagination}
               />
             </Box>
@@ -113,7 +122,7 @@ export default connect(
     payload: state.homePage.payload
   }),
   (dispatch) => ({
-    loadPage: () => dispatch(actions.loadHomePage()),
-    pagination: (page) => dispatch(actions.pagination(page))
+    loadPage: (payload) => dispatch(actions.loadHomePage(payload)),
+    queryJob: (payload) => dispatch(actions.queryJob(payload))
   })
 )(Home)

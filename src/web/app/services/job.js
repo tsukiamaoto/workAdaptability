@@ -1,5 +1,6 @@
-const fetchAllJobs = async () => {
-  const url = '/job'
+
+const fetchJobs = async payload => {
+  const url = (payload === undefined)? '/job': `/job?page=${payload}`
   const res = await fetch( url, {
     method: 'GET',
     headers: {
@@ -10,34 +11,24 @@ const fetchAllJobs = async () => {
   return json
 }
 
-const fetchPageJob = async page => {
-  const url = `/job/${page}`
+const queryJob = async payload => {
+  const {q, page} = payload
+  const url = (page === undefined)? '/job': `/job?page=${page}`
   const res = await fetch( url, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
-  const json = await res.json()
-  return json
-}
-
-const queryJob = payload => {
-  const query = payload.q
-  const url = '/job'
-  return fetch( url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      q: query
+      q
     })
-  }).then(response => response.json())
+  })
+  const json = await res.json()
+  console.log(json)
+  return json
 }
 
 export {
-  fetchAllJobs,
-  fetchPageJob,
+  fetchJobs,
   queryJob
 }
