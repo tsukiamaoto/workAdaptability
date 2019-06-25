@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/styles'
 import { Link as Href } from 'react-router-dom'
 import Box from '@material-ui/core/Box'
@@ -57,70 +57,70 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const Login = props =>{
+  useEffect(() => {
+    props.loadUser()
+  }, [props.isLogin])
+
   const classes= useStyles()
-  const {loading,error,login} = props
+  const {isLogin,error} = props
   const [account, setAccount] = useState('')
   const [password, setPassword] = useState('')
 
   const handleAccountChange = event => { setAccount(event.target.value) }
   const handlePasswordChange = event => { setPassword(event.target.value) }
-  const handleSumbnit = () => {
-    const user = {
-      account,
-      password
-    }
-    login(user)
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    props.login({account: account, password: password})
   }
 
   return (
     <div className={classes.root}>
       <Box display="flex" height={contentTop}/>
-      <Appbar/>
       <Paper className={classes.papper}>
         <Box className={classes.title} display="flex" justifyContent="center" alignItems="center" width={1}>
           <Typography>登入介面</Typography>
         </Box>
-        <Box className={classes.account} display="flex" direction="column" justifyContent="center" alignItems="center" width={1}>
-          <Box display="flex" mx={1}>
-            <TextField
-              className={classes.input}
-              label="帳號"
-              type="email"
-              autoComplete="email"
-              margin="normal"
-              variant="outlined"
-              onChange={handleAccountChange}
-            />
+        <form onSubmit={handleSubmit}>
+          <Box className={classes.account} display="flex" direction="column" justifyContent="center" alignItems="center" width={1}>
+            <Box display="flex" mx={1}>
+              <TextField
+                className={classes.input}
+                label="帳號"
+                margin="normal"
+                variant="outlined"
+                onChange={handleAccountChange}
+              />
+            </Box>
+            <Box display="flex" mx={1}>
+              <Href to="/register">
+                <Link className={classes.register} component="button" variant="body">註冊帳號</Link>
+              </Href>
+            </Box>
           </Box>
-          <Box display="flex" mx={1}>
-            <Href to="/register">
-              <Link className={classes.register} component="button" variant="body">註冊帳號</Link>
-            </Href>
+          <Box  display="flex" direction="column" justifyContent="center" alignItems="center" width={1}>
+            <Box display="flex" mx={1}>
+              <TextField
+                className={classes.input}
+                label="密碼"
+                type="password"
+                autoComplete="password"
+                margin="normal"
+                variant="outlined"
+                onChange={handlePasswordChange}
+              />
+            </Box>
+            <Box display="flex" mx={1}>
+              <Href to="/forgotPassword">
+                <Link className={classes.fogotPassword} component="button" variant="body">找回密碼</Link>
+              </Href>
+            </Box>
           </Box>
-        </Box>
-        <Box  display="flex" direction="column" justifyContent="center" alignItems="center" width={1}>
-          <Box display="flex" mx={1}>
-            <TextField
-              className={classes.input}
-              label="密碼"
-              type="password"
-              autoComplete="password"
-              margin="normal"
-              variant="outlined"
-              onChange={handlePasswordChange}
-            />
+          <Box display="flex" justifyContent="center" mt={3}  width={1}>
+            <Box display="flex" mx>
+              <Button variant="contained" className={classes.login} style={{color: 'white', background: '#3f51b5'}} type="submit">登入</Button>
+            </Box>
           </Box>
-          <Box display="flex" mx={1}>
-            <Href to="/forgotPassword">
-              <Link className={classes.fogotPassword} component="button" variant="body">找回密碼</Link>
-            </Href>
-          </Box>
-        </Box>
-        <Box display="flex" justifyContent="center" mt={3}  width={1}>
-          <Box display="flex" mx>
-            <Button variant="contained" className={classes.login} style={{color: 'white', background: '#3f51b5'}} onClick={handleSumbnit}>登入</Button>
-          </Box>
-        </Box>
+        </form>
       </Paper>
     </div>
   )
@@ -129,11 +129,12 @@ const Login = props =>{
 
 export default connect(
   (state, props) => ({
-    loading: state.account.loading,
-    error: state.account.error,
-    user: state.acount.user,
+    isLogin: state.account.login.isLogin,
+    error: state.account.login.error,
+    user: state.account.login.user,
   }),
   (dispatch) => ({
+    loadUser: () => dispatch(actions.fetchUser()),
     login: (user) => dispatch(actions.login(user))
   })
 )(Login)

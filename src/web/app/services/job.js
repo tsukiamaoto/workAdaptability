@@ -24,7 +24,6 @@ const queryJob = async payload => {
     })
   })
   const json = await res.json()
-  console.log(json)
   return json
 }
 

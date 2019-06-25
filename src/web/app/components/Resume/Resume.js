@@ -10,6 +10,7 @@ import { FiMail, FiPhone} from 'react-icons/fi'
 import License from './License'
 import Autobiography from './Autobiography'
 import { connect } from 'react-redux'
+import * as actions from '../../actions'
 
 HighchartsMore(ReactHighcharts.Highcharts)
 
@@ -41,7 +42,7 @@ const useStyles = makeStyles( theme=>({
     backgroundSize:'cover',
   },
   person: {
-    marginTop: theme.spacing(3),
+    marginTop: theme.spacing(1),
   },
   intro: {
     width: '40%',
@@ -82,16 +83,24 @@ const useStyles = makeStyles( theme=>({
 
 const Resume = props => {
   const classes = useStyles()
-  const { loading, error, payload, loadResume } = props
+  const { loading, error, payload, loadResume,updateResume } = props
+  const [autobiography, uploadAutobiography] = useState()
+  const [license, uploadLicense] = useState()
 
   useEffect(() =>{
-    // loadResume()
-  },[])
-  if(loading)
-    return(<span>Loading...</span>)
-  else if(error)
-    return(<span>Error:{error}</span>)
-  else {
+    props.loadUser()
+    props.loadResume()
+  },[props.isLogin])
+
+  useEffect(() => {
+    updateResume({autobiography,license})
+  },[autobiography,license])
+
+  // if(loading)
+  //   return(<span>Loading...</span>)
+  // else if(error)
+  //   return(<span>Error:{error}</span>)
+  // else {
     return (
       <div className={classes.root}>
         <Appbar />
@@ -100,15 +109,15 @@ const Resume = props => {
           <Box display="flex" className={classes.intro} flexDirection='column' >
             <Box display="flex" className={classes.person}  width='100%' justifyContent="center">
               <img
-                // src={require('../../../assets/person.svg')}
+                src={require('../../../assets/person.svg')}
                 alt="person"
-                width='200'
-                height='150'
+                width='120'
+                height='120'
               />
             </Box>
 
             <Box display="flex" mt={1} justifyContent="center">
-              <Typography className={classes.user} style={{fontSize: '3rem'}}>
+              <Typography className={classes.user} style={{fontSize: '2rem'}}>
                 使用者
               </Typography>
             </Box>
@@ -146,25 +155,29 @@ const Resume = props => {
           </Box>
 
           <Box display="flex" className={classes.autobiography} >
-            <Autobiography/>
+            <Autobiography uploadAutobiography={uploadAutobiography}/>
           </Box>
-          <License/>
+          <License uploadLicense={uploadLicense}/>
         </Box>
 
       </div>
     )
-  }
+  // }
 }
 
 
-// export default connect(
-//   (state, props) => ({
-//     loading: state.resume.loading,
-//     error: state.resume.error,
-//     payload: state.resume.payload
-//   }),
-//   (dispatch) => ({
-//     loadResume: () => dispatch(actions.fetchResume()),
-//   })
-// )(Resume)
-export default Resume
+export default connect(
+  (state, props) => ({
+    isLogin: state.account.fetch.isLogin,
+    loginError: state.account.fetch.error,
+    user: state.account.fetch.user,
+    loading: state.resume.loading,
+    error: state.resume.error,
+    payload: state.resume.payload
+  }),
+  (dispatch) => ({
+    loadUser: () => dispatch(actions.fetchUser()),
+    loadResume: (user) => dispatch(actions.fetchResume(user)),
+    updateResume: (payload) => dispatch(actions.updateResume(payload))
+  })
+)(Resume)

@@ -9,9 +9,17 @@ const pagination = createAction(types.PAGINATION_REQUEST, page => page)
 pagination.success = createAction(types.PAGINATION_SUCCESS, response => response)
 pagination.failure = createAction(types.PAGINATION_FAILURE, error => error)
 
+const fetchUser = createAction(types.USER_LOGIN_REQUEST, meta => undefined)
+fetchUser.success = createAction(types.USER_LOGIN_SUCCESS, response => response)
+fetchUser.failure = createAction(types.USER_LOGIN_FAILURE, error => error)
+
 const login = createAction(types.LOGIN_REQUEST, user => user)
 login.success = createAction(types.LOGIN_SUCCESS, response => response)
 login.failure = createAction(types.LOGIN_FAILURE, error => error)
+
+const logout = createAction(types.LOGOUT_REQUEST, user => user)
+logout.success = createAction(types.LOGOUT_SUCCESS, response => response)
+logout.failure = createAction(types.LOGOUT_FAILURE, error => error)
 
 const register = createAction(types.REGISTER_REQUEST, user => user)
 register.success = createAction(types.REGISTER_SUCCESS, response => response)
@@ -26,9 +34,8 @@ fetchJob.request = createAction(types.JOBS_REQUEST, payload => undefined)
 fetchJob.success = createAction(types.JOBS_SUCCESS, (payload, response) => response)
 fetchJob.failure = createAction(types.JOBS_FAILURE, error => error)
 
-const fetchResume = createAction(types.RESUME_FETCH, options => options)
-fetchResume.request = createAction(types.RESUME_REQUEST, payload => undefined)
-fetchResume.success = createAction(types.RESUME_SUCCESS, (payload, response) => response)
+const fetchResume = createAction(types.REGISTER_REQUEST, user => user)
+fetchResume.success = createAction(types.RESUME_SUCCESS,  response => response)
 fetchResume.failure = createAction(types.REGISTER_FAILURE, error => error)
 
 const updateResume = createAction(types.RESUME_UPDATE_REQUEST, user => user)
@@ -41,8 +48,10 @@ fetchInfromation.success = createAction(types.INFORMATION_SUCCESS, (payload, res
 fetchInfromation.failure = createAction(types.INFORMATION_FAILURE, error => error)
 
 export {
+  fetchUser,
   loadHomePage,
   login,
+  logout,
   pagination,
   register,
   fetchJob,

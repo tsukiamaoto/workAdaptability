@@ -58,6 +58,8 @@ const useStyles = makeStyles(theme => ({
 
 const Appbar = props => {
   const classes = useStyles()
+  const  { queryJob,logout } = props
+
   const [anchorEl, setAnchorEl] = useState(0)
   const [search, setSearch] = useState('')
   const open = Boolean(anchorEl)
@@ -66,14 +68,18 @@ const Appbar = props => {
   const handleSearchChanged = event => {
     setSearch(event.target.value)
   }
-  const makeSearchRequest = (value) => {
-
-  }
   const handleClick = event => {
     setAnchorEl(event.currentTarget)
   }
   const handleClose = () => {
     setAnchorEl(0)
+  }
+  const handleQuery = (event) => {
+    if(event.keyCode === 13) // press enter
+      queryJob(search)
+  }
+  const handleQueryButton = () => {
+    queryJob(search)
   }
 
   return (
@@ -81,17 +87,14 @@ const Appbar = props => {
       <Box className={classes.appbar} width='101%' display='flex' alignItems='center' justifyContent='flex-end'>
         <Box display='flex' mx={5}>
           <Button>
-            <Link className={classes.link} to='/'>
+            <Link className={classes.link} to='/home'>
               <Typography className={classes.appbarFont}>{t('回到首頁')}</Typography>
             </Link>
           </Button>
         </Box>
         <Box display='flex' flexGrow={1} mx={4} m={1}>
           <Paper className={classes.search}>
-            <InputBase className={classes.input} placeholder='Search...' onChange={handleSearchChanged}/>
-            <IconButton className={classes.iconSearch} onClick={makeSearchRequest(search)}>
-              <FiSearch icon='search' />
-            </IconButton>
+            <InputBase className={classes.input} placeholder='Search...' onTouchTap={handleQueryButton} onKeyDown={handleQuery} onChange={handleSearchChanged}/>
           </Paper>
         </Box>
         <Box display='flex' mx={1} >
@@ -124,14 +127,9 @@ const Appbar = props => {
           >
             <Box display='flex' flexDirection='column' alignItems='center' justifyContent='center'>
               <Box display='flex'>
-                <Link className={classes.link} to='/login'>
-                  <Button className={classes.list}>{t('登入')}</Button>
-                </Link>
-              </Box>
-              <Box display='flex'>
-                <Link className={classes.link} to='/register'>
-                  <Button className={classes.list}>{t('註冊')}</Button>
-                </Link>
+                <Button className={classes.list} onClick={logout}>
+                  {t('登出')}
+                </Button>
               </Box>
               <Box display='flex'>
                 <Link className={classes.link} to='/information'>

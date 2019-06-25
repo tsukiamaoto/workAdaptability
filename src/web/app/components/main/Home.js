@@ -43,13 +43,16 @@ const useStyles = makeStyles(theme => ({
 
 const Home = props => {
   const classes= useStyles()
-  const {loading, error, payload,loadPage, history, queryJob } = props
+  const {loading, error, payload, loadPage, logout, history, queryJob,user } = props
   const {jobs, pages} = payload
   const [value, setValue] = useState(0)
   const [isLoad, setIsLoad] = useState(false)
-  const [state, setState] = useState()
   const [query, setQuery] = useState('')
   const { t, i18n } = useTranslation()
+
+  useEffect(() => {
+    props.loadUser()
+  },[props.isLogin])
 
   useEffect(() => {
     const page = queryString.parse(history.location.search).page
@@ -67,8 +70,11 @@ const Home = props => {
     const perPage = 10
 
     const page = offset / perPage + 1
-    history.push(`?page=${page}`)
+    history.push(`/home/?page=${page}`)
     setIsLoad(true)
+  }
+  const handleLogout = () => {
+    logout(user)
   }
 
   if(loading){
@@ -79,7 +85,7 @@ const Home = props => {
     return (
       <div className={classes.root}>
         <div className={classes.content}>
-          <Appbar queryJob={setQuery}/>
+          <Appbar queryJob={setQuery} logout={handleLogout}/>
           <Box display='flex' flexDirection='column'>
             <Box dispaly='flex' height={contentTop} />
             <Box display='flex'>
@@ -103,7 +109,7 @@ const Home = props => {
                 size='large'
                 limit={10}
                 offset={(pages.current === 1)? 0: (pages.current - 1) * 10}
-                total={pages.total}
+                total={pages.last}
                 onClick={handlePagination}
               />
             </Box>
@@ -117,12 +123,17 @@ const Home = props => {
 
 export default connect(
   (state, props) => ({
+    isLogin: state.account.fetch.isLogin,
+    loginError: state.account.fetch.error,
+    user: state.account.fetch.user,
     loading: state.homePage.loading,
     error: state.homePage.error,
     payload: state.homePage.payload
   }),
   (dispatch) => ({
     loadPage: (payload) => dispatch(actions.loadHomePage(payload)),
+    loadUser: () => dispatch(actions.fetchUser()),
+    logout: (user) => dispatch(actions.logout(user)),
     queryJob: (payload) => dispatch(actions.queryJob(payload))
   })
 )(Home)
