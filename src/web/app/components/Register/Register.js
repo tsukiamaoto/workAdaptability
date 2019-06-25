@@ -64,11 +64,15 @@ const useStyles = makeStyles(theme => ({
     fontSize: 18,
     width: '100%',
     height: '20%',
+  },
+  link: {
+    textDecoration: 'none'
   }
 }))
 
 const Register = props => {
   const classes = useStyles()
+  const { history } = props
 
   const [account, setAccount] = useState('')
   const [password, setPassword] = useState('')
@@ -110,7 +114,6 @@ const Register = props => {
 
   return (
     <div className={classes.root}>
-      <Appbar/>
       <Box display="flex" height={contentTop} />
       <Paper className={classes.paper}>
         <Box className={classes.title} display="flex" justifyContent="center" alignItems="center" width={1}>
@@ -131,7 +134,7 @@ const Register = props => {
               <Box display="flex" >
                 <Typography>
                   已有帳號?現在
-                  <Href to="/login">
+                  <Href to="/">
                     <Link className={classes.login} component="button" variant="inherit" >登入</Link>
                   </Href>
                 </Typography>
@@ -279,6 +282,7 @@ const Register = props => {
 
             <Box display="flex" mt={4}>
               <Button className={classes.ok} style={{color: 'white', background: '#3f51b5'}} type="submit">確認送出</Button>
+              <Button className={classes.ok} style={{marginLeft: 30, color: 'white', background: '#3f51b5'}} onClick={() => history.push('/')}>返回登入</Button>
             </Box>
           </Box>
         </form>

@@ -14,11 +14,11 @@ const App = () => (
   <Suspense fallback={<Loader/>}>
     <ConnectedRouter history={history}>
       <Switch>
-        <Route exact path = "/" component = {Home} />
-        <Route path = "/resume" component = {Resume} />
-        <Route path = "/login" component = {Login} />
-        <Route path = "/register" component = {Register} />
-        <Route path = "/information" component = {User} />
+        <Route path = "/" exact component = {Login} />
+        <Route path = "/register" exact component = {Register} />
+        <Route path = "/home" exact component = {Home} />
+        <Route path = "/resume" exact component = {Resume} />
+        <Route path = "/information" exact component = {User} />
       </Switch>
     </ConnectedRouter>
   </Suspense>
