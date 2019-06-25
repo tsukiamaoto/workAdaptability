@@ -25,7 +25,7 @@ const License = (props) => {
   const acceptLicenseType = ['.pdf','.png','.gif','.jpg','jpeg']
   const [files, setFiles] = useState([])
   const [pond, setPond] = useState()
-  const [license, setLicense] = useState([])
+  const {uploadLicense} = props
 
   const handleInit = () => {
     console.log("FilePond instance has initialised", pond)
@@ -60,6 +60,7 @@ const License = (props) => {
               files={files}
               allowMultiple={true}
               maxFiles={20}
+              server={uploadLicense}
               server="/resume/update"
               oninit={handleInit}
               onupdatefiles={fileItems => {

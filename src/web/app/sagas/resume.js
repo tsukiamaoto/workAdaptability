@@ -3,9 +3,9 @@ import * as actions from '../actions'
 import * as types from '../actions/types'
 import api from '../services'
 
-function* updateResume(user) {
+function* updateResume(action) {
   try {
-    const resume = yield call(api.resume.update,user)
+    const resume = yield call(api.resume.updateResume,action)
     yield put(actions.updateResume.success(resume))
   } catch(err){
     yield put(actions.updateResume.failure(err.message))
@@ -14,15 +14,15 @@ function* updateResume(user) {
 
 function* watchUpdateResume() {
   while(true){
-    const user = yield take(types.RESUME_UPDATE_REQUEST)
-    yield call(updateResume,user)
+    const action = yield take(types.RESUME_UPDATE_REQUEST)
+    yield call(updateResume,action)
   }
 }
 
-function* fetchResume() {
+function* fetchResume(action) {
   try {
-    yield put(actions.fetchResume.request)
-    const resume = yield call(api.resume.get)
+    const user = action.payload
+    const resume = yield call(api.resume.fetchResume, user)
     yield put(actions.fetchResume.success(resume))
   } catch(err) {
     yield put(actions.fetchResume.failure(err.message))
@@ -31,12 +31,13 @@ function* fetchResume() {
 
 function* wathFetchResume() {
   while(true){
-    yield take(types.RESUME_FETCH)
-    yield call(fetchResume)
+    const action = yield take(types.RESUME_FETCH)
+    yield call(fetchResume, action)
   }
 }
 
 export default [
   fork(watchUpdateResume),
+  fork(wathFetchResume)
 ]
 

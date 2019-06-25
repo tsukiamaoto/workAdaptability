@@ -5,8 +5,6 @@ import Button from '@material-ui/core/Button'
 import Box from '@material-ui/core/Box'
 import { FiUpload } from 'react-icons/fi'
 import { Document, Page, pdfjs  } from 'react-pdf'
-import { connect } from 'react-redux'
-import * as actions from '../../actions'
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const useStyles = makeStyles( theme =>({
@@ -22,17 +20,16 @@ const Autobiography = props => {
   const acceptAutobiographyType = ['.pdf']
   const [numPages, setNumPages] = useState(0)
   const [pageNumber,setPageNumber] = useState(1)
+  const {uploadAutobiography} = props
   const [file, setFile] = useState()
-  const [autobiography, setAutobiography] = useState([])
-  const {upload} = props
-  console.log(upload)
+
   const onDocumentLoadSuccess = ({ numPages }) => {
     setNumPages(numPages)
   }
   const handleFileUpload = event => {
     const files = event.target.files
     if(files) {
-      upload(files[0])
+      uploadAutobiography(files[0])
     }
     event.target.value  = ''
   }
@@ -53,8 +50,9 @@ const Autobiography = props => {
         </label>
         <Box minHeight='50%' width='100%'>
           <Fieldset legend="自傳上傳(需上傳PDF檔)" style={{ minWidth: '25vw', color:'#3f51b5',borderColor:'#80d8ff'}}>
+
             <Document
-              file="https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf"
+              file=""
               onLoadSuccess={onDocumentLoadSuccess}
               onLoadError={console.error}
             >
@@ -67,13 +65,4 @@ const Autobiography = props => {
   )
 }
 
-export default connect(
-  (state, props) => ({
-    loading: state.resume.loading,
-    error: state.resume.error,
-    payload: state.resume.payload
-  }),
-  (dispatch) => ({
-    upload: (resume) => dispatch(actions.updateResume(resume)),
-  })
-)(Autobiography)
+export default Autobiography
