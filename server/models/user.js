@@ -12,11 +12,7 @@ const userSchema = new Schema({
     birth: { type: String },
     education: { type: String },
     address: { type: String },
-    resume: { type: String },
-    interest_symbol: { type: String },
-    hobbies: [{ type: String }],
-    skills: [{ type: String }],
-    weight: [{ type: Number }],
+    resume: { type: Schema.Types.ObjectId, ref: 'Resume' },
     isLogin: { type: Boolean, default: false }
 });
 userSchema.plugin(paginatePlugin);

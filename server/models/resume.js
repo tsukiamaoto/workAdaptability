@@ -1,11 +1,13 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const resumeSchema = new Schema({
-    email: { type : String, required:true },
-    password: { type: String,required: true },
-    name: { type: String },
-    phone: { type: String },
-    address: { type: String }
+  autobiography: { type : String },
+  license: [{ type: String }],
+  interest: { type: Schema.Types.ObjectId, ref: 'Interest' },
+  interest_symbol: { type: String, default: '' },
+  hobbies: [{ type: String }],
+  skills: [{ type: String }],
+  recommend_jobs: [{ type: String }]
 });
 
 module.exports = mongoose.model('Resume',resumeSchema);

@@ -6,6 +6,7 @@ const interestSchema = new Schema({
   social: { type: Number },
   enterprising: { type: Number },
   realistic: { type: Number },
+  conventional: { type: Number }
 });
 
 module.exports = mongoose.model('Interest', interestSchema);
