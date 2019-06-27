@@ -76,14 +76,12 @@ const useStyles = makeStyles( theme=>({
     borderWidth: 3,
     background: theme.palette.primary.white,
     opacity: 0.9
-  },
-
-
+  }
 }))
 
 const Resume = props => {
   const classes = useStyles()
-  const { loading, error, payload, loadResume,updateResume } = props
+  const { loading, error, payload, updateResume, user } = props
   const [autobiography, uploadAutobiography] = useState()
   const [license, uploadLicense] = useState()
 
@@ -93,9 +91,16 @@ const Resume = props => {
   },[props.isLogin])
 
   useEffect(() => {
-    updateResume({autobiography,license})
+    updateResume({autobiography,license,user})
   },[autobiography,license])
 
+  useEffect(() => {
+    // const interest = payload.resume
+    // if(payload && payload.length)
+      console.log(payload)
+
+    // config.series = []
+  },[payload])
   // if(loading)
   //   return(<span>Loading...</span>)
   // else if(error)

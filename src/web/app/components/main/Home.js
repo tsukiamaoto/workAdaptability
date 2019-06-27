@@ -89,7 +89,7 @@ const Home = props => {
           <Box display='flex' flexDirection='column'>
             <Box dispaly='flex' height={contentTop} />
             <Box display='flex'>
-              <Paper >
+              <Paper>
                 <Tabs className={classes.filter} value={value} onChange={handleTabsChanged} textColor='primary' >
                   <Tab className={classes.tabs} label='薪資最高' />
                   <Tab className={classes.tabs} label='最適合你' />

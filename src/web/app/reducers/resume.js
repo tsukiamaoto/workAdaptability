@@ -20,7 +20,7 @@ const resume = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        payload: action.resume
+        payload: action.payload.resume
       }
     case types.RESUME_FAILURE:
     case types.RESUME_UPDATE_FAILURE:

@@ -1,3 +1,4 @@
+
 const fetchResume = async () => {
   const url = '/resume'
   const res = await fetch( url, {
@@ -9,9 +10,9 @@ const fetchResume = async () => {
 
 const updateResume = async action => {
   const url = '/resume/upload'
-  const {autobiography, license} = action.payload
-  console.log(action.payload)
+  const {autobiography, license,user} = action.payload
   var fd = new FormData()
+  fd.append('user',user)
   fd.append('autobiography', autobiography)
   fd.append('license', license)
 
