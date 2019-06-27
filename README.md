@@ -5,12 +5,14 @@
 
 ### frontend
 先在`root`根目錄，有出現`package.json`檔案的地方安裝依賴檔`node_modules`
+
 安裝前端套件
 ``` javascript
 npm install
 ```
 ### backend
 再到`server`資料夾，有出現`package.json`檔案的地方安裝依賴檔`node_modules`
+
 安裝後端套件
 ``` javascript
 npm install
