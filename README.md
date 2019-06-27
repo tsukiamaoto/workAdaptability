@@ -24,13 +24,13 @@ npm install
 ### frontend
 在根目錄轉換成`.env`的檔名
 ``` javascript
-cp .example.env .env
+cp .env.example .env
 ```
 
 ### backend
 在`server`資料夾轉換成`.env`的檔名
 ``` javascript
-cp .example.env .env
+cp .env.example .env
 ```
 
 ## usage 
