@@ -1,22 +1,22 @@
 # job Adaption
 > 為了讓大家更認識自己 這是一款根據你的自傳判斷你適合職業的程式
 
-### installation
+## installation
 
 ### frontend
-先在`root`根目錄的地方安裝依賴檔`node_modules`
+先在`root`根目錄，有出現`package.json`檔案的地方安裝依賴檔`node_modules`
 安裝前端套件
 ``` javascript
 npm install
 ```
 ### backend
-再到`server`資料夾安裝依賴檔`node_modules`
+再到`server`資料夾，有出現`package.json`檔案的地方安裝依賴檔`node_modules`
 安裝後端套件
 ``` javascript
 npm install
 ```
 
-### usage 
+## usage 
 
 這個需要架起`前端server`和`後端server`
 
