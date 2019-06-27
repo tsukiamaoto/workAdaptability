@@ -18,6 +18,21 @@ npm install
 npm install
 ```
 
+## env 
+環境設定檔也要用好,要轉換env檔名,或者建立`.env`檔案
+
+### frontend
+在根目錄轉換成`.env`的檔名
+``` javascript
+cp .example.env .env
+```
+
+### backend
+在`server`資料夾轉換成`.env`的檔名
+``` javascript
+cp .example.env .env
+```
+
 ## usage 
 
 這個需要架起`前端server`和`後端server`
