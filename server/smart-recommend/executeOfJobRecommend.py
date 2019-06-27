@@ -6,6 +6,7 @@ Created on Wed Jun 12 22:38:28 2019
 """
 import os,sys
 import json
+import re
 #print(sys.path)
 file_path = os.path.abspath(os.path.join('./public/uploads/out.txt'))
 # file_path = os.path.abspath(os.path.join('../public/uploads/out.txt'))
@@ -23,15 +24,20 @@ def main(argv=None):
     #outputFile="test2_seg.txt"
     # etc., replacing sys.argv with argv in the getopt() call.
     user_skill_list=getUserSkill(cutWord(inputFile))#jieba_dict要和execute放在同一個資料夾
-    #print(user_skill_list)    
+    #print(user_skill_list)
     recommendJob=recommend_job(cutWord(inputFile))
-    #print(recommendJob)
+
+    str_recommend=""
+    for item in recommendJob:
+        str_recommend += "".join(item+"/")
+    splits_recommend = re.split(r'[/／]',str_recommend)
+    splits_recommend.pop()
     tmp={}
     tmp['skills']=user_skill_list.copy()
-    tmp['recommend_jobs']=recommendJob.copy()
-    #print(tmp)
+    tmp['recommend_jobs']=splits_recommend.copy()
+    # print(tmp)
     out = json.dumps(tmp)
-    print(out)
+    print(out,end="")
     # return out
 if __name__ == "__main__":
     main()

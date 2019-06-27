@@ -141,7 +141,7 @@ def show_perfect(count,perfect_list,output_list):#
     else:
         i=0
         while(count<3 and i<len(perfect_list)):
-            print(count)
+            # print(count)
             output_list.append(perfect_list[i]['job'])
             i+=1
             count+=1

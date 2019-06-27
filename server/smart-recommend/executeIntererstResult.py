@@ -29,7 +29,7 @@ def main(argv=None):
     tmp['weight']=weightList.copy()
     tmp['user_hobby']=userHobbyList.copy()
     out = json.dumps(tmp)
-    print(out)
+    print(out,end="")
     # return out
 if __name__ == "__main__":
    main()
