@@ -15,7 +15,7 @@ router.get('/', function(req, res) {
       res.json({ user: user})
     }
   });
-  
+
 });
 
 // login account
@@ -45,7 +45,7 @@ router.post('/logout', function(req, res) {
     password: req.body.password
   }
   console.log('user logout')
-  User.findOneAndUpdate(logout,{$set: { isLogin: false }}, function(err, user) {
+  User.findOneAndUpdate(logout,{$set: { isLogin: false }}, {new: true} , function(err, user) {
     if (!user) {
       // if not found account
       console.log('the account is not exist!');

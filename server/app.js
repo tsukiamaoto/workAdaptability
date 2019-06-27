@@ -6,18 +6,18 @@ const { spawn } = require('child_process');
 const cors = require('cors');
 const crypto = require('crypto');
 const bodyParser = require('body-parser')
-const request = require('request');
 const resumesRouter = require('./controller/resume');
 const usersRouter = require('./controller/users');
 const jobsRouter = require('./controller/job');
-var convertapi = require('convertapi')('CfYGjErF2UtaiBn7');
+const convertapi = require('convertapi')('CfYGjErF2UtaiBn7');
 const Multer = require('multer');
 const mongoose = require('mongoose');
 const hash = crypto.createHash('sha256');
 const app = express();
 
 const User = require('./models/user');
-
+const Interest = require('./models/Interest');
+const Resume = require('./models/resume');
 
 require('dotenv').config();
 app.use(cors())
@@ -47,6 +47,7 @@ const multer = Multer({
 // @desc  Uploads file to DB
 app.post('/resume/upload', multer.any(), (req, res,next) => {
   const path = './public/uploads/pdf/'
+
   if (!req.files) {
     return next();
   }
@@ -63,80 +64,71 @@ app.post('/resume/upload', multer.any(), (req, res,next) => {
     console.log('smart-recommend start');
     const runInterestPy = new Promise(function(success, nosuccess) {
       const pyprog = spawn('python', [ file_path + file[0]])
+
       pyprog.stdout.on('data', function(data) {
         const results = JSON.parse(iconv.decode(data,'Big5'));
-        console.log(results)
-        // success(results)
-        // const userData = { $push:{
-        //   "interest_symbol": temp.interest_symbol,
-        //   "hobby": temp.user_hobby,
-        //   "weight": temp.weight
-        // }}
-
-        // User.findOneAndUpdate( { isLogin:true }, userData, (err, user) => {
-        //   console.log('success')
-        // })
-
+        success(results)
       });
       pyprog.stderr.on('data', function(data) {
         console.log(data.toString())
       });
       pyprog.on('close', function(code) {
         console.log('轉換完成!')
-      })
+      });
     });
     const runJobPy = new Promise(function(success, nosuccess) {
       const pyprog = spawn('python', [ file_path + file[1]])
+
       pyprog.stdout.on('data', function(data) {
-        const results = iconv.decode(data,'Big5').replace('/(\r)|(\n)/',''); // remove space, tab, \n
-        console.log(1,results[0],results[1],2,results)
-        
-        //console.log(results[0],result[1])
-        // const userData = { $push:{
-        //   "skills": temp2.skills,
-        //   "recommend_jobs": temp2.recommend_jobs
-        // }}
-        // User.findByIdAndUpdate({isLogin:true},userData,(err) =>{
-        //   console.log('success')
-        // })
+        const results = JSON.parse(iconv.decode(data,'Big5'));
+        success(results)
       });
       pyprog.stderr.on('data', function(data) {
         console.log(data.toString())
       });
       pyprog.on('close', function(code) {
         console.log('轉換完成!')
-      })
+      });
     });
 
-    Promise.all([runInterestPy,runJobPy])
-      // const results = await values.map(async value => { 
-      //   const res = await JSON.stringify(value)
-      //   return res
-      // })
-      // const results = await JSON.stringify(values[0])
-      
-
-    res.json({success: true})
-  }).catch(err => {res.json({err:err})});
-});
-
-// @route GET /files
-// @desc  Display all files in JSON
-app.get('/files', (req, res) => {
-  gfs.files.find().toArray((err, files) => {
-    // Check if files
-    if (!files || files.length === 0) {
-      return res.status(404).json({
-        err: 'No files exist'
-      });
-    } else {
-      files.map(file => {
-        if (file.contentType === 'image/jpeg' || file.contentType === 'image/png' || file.contentType === 'image/gif') file.isImage = true;
-        else file.isImage = false;
+    Promise.all([runInterestPy,runJobPy]).then(values =>{
+      const [interest,job] = values
+      const interest1 = {
+        artistic: interest.weight[0],
+        conventional: interest.weight[1],
+        enterprising: interest.weight[2],
+        investigative: interest.weight[3],
+        realistic: interest.weight[4],
+        social: interest.weight[5]
+      }
+      const resume1 = new Resume({
+        autobiography: req.files[0].filename,
+        interest_symbol: interest.interest_symbol,
+        hobbies: interest.user_hobby,
+        skills: job.skills,
+        recommend_jobs: job.recommend_jobs
       })
-    }
-    res.json({files: files})
-  });
+
+      Interest.create(interest1,function(err, interest){
+        resume1.interest = interest.id;
+        resume1.save().then(resume => {
+          try {
+            User.findOneAndUpdate({isLogin: true},{$set:{resume: mongoose.Types.ObjectId(resume.id)}},{new: true})
+              .populate({ path: 'resume', model: Resume,
+                populate: {
+                  path: 'interest', model: Interest
+                }
+              })
+              .exec((err, doc) => {
+                res.json({ resume: doc.resume })
+              })
+          }catch(err){
+            console.log(err)
+          }
+        })
+      })
+    });
+  }).catch(err => {res.json({err:err})});
 });
 
 // @route GET /image/:filename
