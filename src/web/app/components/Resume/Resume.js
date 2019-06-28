@@ -16,24 +16,6 @@ HighchartsMore(ReactHighcharts.Highcharts)
 
 const contentTop = '8vh'
 
-var config = {
-  chart: {
-    polar: true,
-    type: 'line'
-  },
-  title: {
-    text: ''
-  },
-  xAxis: {
-    categories: ['研究型(I)','藝術型(A)','社會型(S)','企業型(E)','事務型(C)','實用型(R)'],
-    tickmarkPlacement: 'on',
-    lineWidth: 0
-  },
-  series: [{
-    data: [12, 13, 19, 17, 15, 24]
-  }]
-}
-
 const useStyles = makeStyles( theme=>({
   root: {
     flex: 1,
@@ -84,23 +66,44 @@ const Resume = props => {
   const { loading, error, payload, updateResume, user } = props
   const [autobiography, uploadAutobiography] = useState()
   const [license, uploadLicense] = useState()
+  const [data, setData] = useState()
+  const [charts, setCharts] = useState()
+  var config = {
+    chart: {
+      polar: true,
+      type: 'line'
+    },
+    title: {
+      text: ''
+    },
+    xAxis: {
+      categories: ['研究型(I)','藝術型(A)','社會型(S)','企業型(E)','事務型(C)','實用型(R)'],
+      tickmarkPlacement: 'on',
+      lineWidth: 0
+    },
+    series: [{data:[]}]
+  }
 
-  useEffect(() =>{
+  useEffect(() => {
     props.loadUser()
-    props.loadResume()
+    if(props.isLogin) props.loadResume(user)
   },[props.isLogin])
 
+  // update resume
   useEffect(() => {
     updateResume({autobiography,license,user})
   },[autobiography,license])
 
+  // upload interest highcharts
   useEffect(() => {
-    // const interest = payload.resume
-    // if(payload && payload.length)
-      console.log(payload)
-
-    // config.series = []
+    console.log(payload)
+    const { interest } = payload
+    const interest_values = interest && [interest.artistic, interest.conventional, interest.enterprising, interest.investigative, interest.realistic, interest.social]
+    const interest_map = interest_values && interest_values.map(value => value * 100)
+    charts && charts.getChart() && charts.getChart().series[0] && charts.getChart().series[0].setData(interest_map,true)
   },[payload])
+
+
   // if(loading)
   //   return(<span>Loading...</span>)
   // else if(error)
@@ -134,11 +137,11 @@ const Resume = props => {
               </Typography>
               <ReactHighcharts
                 config={config}
+                ref={chart => setCharts(chart)}
               />
             </Box>
 
             <Box display="flex" className={classes.icons} mt={4} flexDirection='column'>
-
               <Box display="flex" alignItems='center'>
                 <Box display="flex">
                   <IconButton><FiMail/></IconButton>

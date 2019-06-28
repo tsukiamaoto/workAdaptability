@@ -7,10 +7,12 @@ import Tab from '@material-ui/core/Tab'
 import * as actions from '../../actions'
 import Appbar from '../Common/Appbar'
 import Table from './Table'
+import RecommendList from './RecommendList'
 import Pagination from 'material-ui-flat-pagination'
-import { useTranslation } from 'react-i18next'
+// import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
-import queryString from 'query-string';
+import queryString from 'query-string'
+
 
 const contentTop = 85
 const useStyles = makeStyles(theme => ({
@@ -43,16 +45,21 @@ const useStyles = makeStyles(theme => ({
 
 const Home = props => {
   const classes= useStyles()
-  const {loading, error, payload, loadPage, logout, history, queryJob,user } = props
+  const {loading, error, payload, loadPage, logout, history, queryJob, user, resume } = props
   const {jobs, pages} = payload
-  const [value, setValue] = useState(0)
+  const [tabs, setTabs] = useState(0)
   const [isLoad, setIsLoad] = useState(false)
   const [query, setQuery] = useState('')
-  const { t, i18n } = useTranslation()
+
+
+  // const { t, i18n } = useTranslation()
 
   useEffect(() => {
     props.loadUser()
+    if(props.isLogin) props.loadResume(user)
   },[props.isLogin])
+
+  console.log(resume)
 
   useEffect(() => {
     const page = queryString.parse(history.location.search).page
@@ -63,19 +70,20 @@ const Home = props => {
     setIsLoad(false)
   },[isLoad,query])
 
-  const handleTabsChanged = (event, newValue) => {
-    setValue(newValue);
+  function handleTabsChanged (event, tab){
+    setTabs(tab);
   }
-  const handlePagination = (event, offset) => {
+  function handlePagination (event, offset){
     const perPage = 10
 
     const page = offset / perPage + 1
     history.push(`/home/?page=${page}`)
     setIsLoad(true)
   }
-  const handleLogout = () => {
+  function handleLogout (){
     logout(user)
   }
+
 
   if(loading){
     return <span>Loading...</span>
@@ -90,17 +98,22 @@ const Home = props => {
             <Box dispaly='flex' height={contentTop} />
             <Box display='flex'>
               <Paper>
-                <Tabs className={classes.filter} value={value} onChange={handleTabsChanged} textColor='primary' >
-                  <Tab className={classes.tabs} label='薪資最高' />
+                <Tabs className={classes.filter} value={tabs} onChange={handleTabsChanged} textColor='primary' >
+                  <Tab className={classes.tabs} label='工作列表' />
                   <Tab className={classes.tabs} label='最適合你' />
                 </Tabs>
               </Paper>
               <Box width='40%'/>
             </Box>
-            <Box Box display='flex'>
+            <Box display='flex'>
               <Paper className={classes.table}>
                 <Table jobs={jobs}/>
               </Paper>
+              <Box width='5%'/>
+              <Box width='20%' display='flex' alignSelf='flex-start'>
+                <RecommendList recommends={resume.recommend_jobs}/>
+                <Box width='10%'/>
+              </Box>
             </Box>
             <Box display='flex' justifyContent='center' mt={3}>
               <Pagination
@@ -128,11 +141,13 @@ export default connect(
     user: state.account.fetch.user,
     loading: state.homePage.loading,
     error: state.homePage.error,
-    payload: state.homePage.payload
+    payload: state.homePage.payload,
+    resume: state.resume.payload
   }),
   (dispatch) => ({
     loadPage: (payload) => dispatch(actions.loadHomePage(payload)),
     loadUser: () => dispatch(actions.fetchUser()),
+    loadResume: (user) => dispatch(actions.fetchResume(user)),
     logout: (user) => dispatch(actions.logout(user)),
     queryJob: (payload) => dispatch(actions.queryJob(payload))
   })

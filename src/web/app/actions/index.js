@@ -34,9 +34,9 @@ fetchJob.request = createAction(types.JOBS_REQUEST, payload => undefined)
 fetchJob.success = createAction(types.JOBS_SUCCESS, (payload, response) => response)
 fetchJob.failure = createAction(types.JOBS_FAILURE, error => error)
 
-const fetchResume = createAction(types.REGISTER_REQUEST, user => user)
+const fetchResume = createAction(types.RESUME_REQUEST, user => user)
 fetchResume.success = createAction(types.RESUME_SUCCESS,  response => response)
-fetchResume.failure = createAction(types.REGISTER_FAILURE, error => error)
+fetchResume.failure = createAction(types.RESUME_FAILURE, error => error)
 
 const updateResume = createAction(types.RESUME_UPDATE_REQUEST, user => user)
 updateResume.success = createAction(types.RESUME_UPDATE_SUCCESS, response => response)

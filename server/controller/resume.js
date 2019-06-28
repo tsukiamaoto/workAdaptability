@@ -9,14 +9,21 @@ const Resume = require('../models/resume');
 router.get('/:resumeId', function(req, res) {
   const resumeId = req.params.resumeId;
   console.log('get resume');
-  Resume.findById(resumeId, function(err, resume) {
-   assert.equal(null, err);
-   console.log('get resume successfully!');
-   res.json({ resume: resume });
+  Resume.findById(resumeId)
+    .populate('interest')
+    .exec( function (err, resume) {
+    if(!resume){
+      console.log('could not find resume!')
+      res.json({err:err})
+    }
+    else{
+      console.log('get resume successfully!');
+      res.json({ resume: resume });
+    }
   });
 });
 
-// create a new resume
+// get a new resume
 router.post('/', function(req, res) {
   const resume = { ...req.body};
   console.log('create new resume');

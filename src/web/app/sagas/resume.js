@@ -21,8 +21,7 @@ function* watchUpdateResume() {
 
 function* fetchResume(action) {
   try {
-    const user = action.payload
-    const resume = yield call(api.resume.fetchResume, user)
+    const resume = yield call(api.resume.fetchResume, action)
     yield put(actions.fetchResume.success(resume))
   } catch(err) {
     yield put(actions.fetchResume.failure(err.message))
@@ -31,7 +30,7 @@ function* fetchResume(action) {
 
 function* wathFetchResume() {
   while(true){
-    const action = yield take(types.RESUME_FETCH)
+    const action = yield take(types.RESUME_REQUEST)
     yield call(fetchResume, action)
   }
 }

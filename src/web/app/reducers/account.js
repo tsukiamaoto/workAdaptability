@@ -5,7 +5,7 @@ const initialState = {
   isLogin: false,
   isLogout: false,
   error: '',
-  user: {}
+  user: []
 }
 
 const account = combineReducers({

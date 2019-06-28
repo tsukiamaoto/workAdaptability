@@ -1,8 +1,12 @@
 
-const fetchResume = async () => {
-  const url = '/resume'
+const fetchResume = async action => {
+  const resumeId = action.payload.resume
+  const url = `/resume/${resumeId}`
   const res = await fetch( url, {
     method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    }
   })
   const json = await res.json()
   return json

@@ -43,8 +43,7 @@ const multer = Multer({
 });
 
 
-// @route POST /upload
-// @desc  Uploads file to DB
+// Uploads file to DB
 app.post('/resume/upload', multer.any(), (req, res,next) => {
   const path = './public/uploads/pdf/'
 
@@ -52,6 +51,7 @@ app.post('/resume/upload', multer.any(), (req, res,next) => {
     return next();
   }
 
+  // pdf convert to txt
   convertapi.convert('txt', {
     File: path + req.files[0].filename,
   }, 'pdf').then(function (result) {
@@ -61,6 +61,7 @@ app.post('/resume/upload', multer.any(), (req, res,next) => {
     file = ['executeIntererstResult.py','executeOfJobRecommend.py']
     file_path = './smart-recommend/'
 
+    // use smart-recommend to calculate autobiography to get weight, interest, recommend_jobs
     console.log('smart-recommend start');
     const runInterestPy = new Promise(function(success, nosuccess) {
       const pyprog = spawn('python', [ file_path + file[0]])
@@ -109,6 +110,7 @@ app.post('/resume/upload', multer.any(), (req, res,next) => {
         recommend_jobs: job.recommend_jobs
       })
 
+      // save interest, jobs, weight to DB
       Interest.create(interest1,function(err, interest){
         resume1.interest = interest.id;
         resume1.save().then(resume => {
@@ -163,25 +165,11 @@ app.get('/image/:filename', (req, res) => {
   });
 });
 
-// @route GET /files/:filename
-// @desc  Display single file object
-app.get('/resume/:filename', (req, res) => {
-  gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
-    // Check if file
-    if (!file || file.length === 0) {
-      return res.status(404).json({
-        err: 'No file exists'
-      });
-    }
-    // File exists
-    return res.json({file: file});
-  });
-});
-
 // route url
 app.use('/user', usersRouter);
 app.use('/job', jobsRouter);
-// app.use('/resume', resumesRouter);
+app.use('/resume', resumesRouter);
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
