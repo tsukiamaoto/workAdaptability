@@ -3,8 +3,9 @@ const assert = require('assert');
 const router = express.Router();
 
 const Job = require('../models/job');
+const helper = require('./helper');
 
-// get all job 
+// get all job
 router.get('/', function(req,res) {
   console.log('get all job');
   const page = req.query.page;
@@ -34,40 +35,36 @@ router.get('/:jobId', function(req,res) {
 // search job
 router.post('/',function(req,res) {
   console.log('search jobs by title or types');
-  const query = req.body.q || '';
+  const queries = req.body.q || '';
+  try{
+  const title = helper.titleIsArray(queries)
+  const career = helper.careerIsArray(queries)
   const page = req.query.page;
-  console.log(page)
   Job.paginate({page: page}, (err,pages) => {
     Job.find({ $or: [
-      { title: { $regex: query, $options: 'i' } },
-      { career: { $in: query } }
+      { title: title },
+      { career: career }
     ]})
       .limit(pages.limit)
       .skip(pages.skip)
       .exec((err, jobs) => {
-        res.json({
-          jobs: jobs,
-          pages: pages
-        })
+        if(jobs){
+          res.json({
+            jobs: jobs,
+            pages: pages
+          })
+        }
+        else {
+          console.log(err)
+          res.json({
+            err: err
+          })
+        }
       })
   })
-  
-  // Job.find({ $or: [
-  //   { title: { $regex: query, $options: 'i' } },
-  //   { career: { $in: query } }
-  // ]})
-  //   .skip((perPage * page) - perPage)
-  //   .limit(perPage)
-  //   .exec( function(err, jobs) {
-  //     Job.countDocuments().exec( function(err, count) {
-  //       console.log('get data from mongoDB successfully');
-  //       res.json({
-  //         jobs: jobs,
-  //         currentPage: page,
-  //         pages: count
-  //       })
-  //     });
-  // });
+  }catch(err){
+    console.log(err)
+  }
 });
 
 

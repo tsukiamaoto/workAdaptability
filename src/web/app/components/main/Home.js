@@ -59,16 +59,17 @@ const Home = props => {
     if(props.isLogin) props.loadResume(user)
   },[props.isLogin])
 
-  console.log(resume)
-
   useEffect(() => {
     const page = queryString.parse(history.location.search).page
+    if(tabs === 0);
+    else if(tabs === 1) setQuery(resume.recommend_jobs)
+    console.log(query)
     if(query && query.length)
       queryJob({q: query,page: page})
     else
       loadPage(page)
     setIsLoad(false)
-  },[isLoad,query])
+  },[isLoad,query,tabs])
 
   function handleTabsChanged (event, tab){
     setTabs(tab);

@@ -18,7 +18,7 @@ const useStyles = makeStyles(theme => ({
 const RecommendList = props => {
   const classes= useStyles()
   const {recommends} = props
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
 
   function handleClick () {
     setOpen(!open);
