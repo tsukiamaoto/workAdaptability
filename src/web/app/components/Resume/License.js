@@ -68,7 +68,6 @@ const License = (props) => {
                 setFiles(fileItems.map(fileItem => fileItem.file))
               }}
             />
-
             <img/>
           </Fieldset>
         </Box>

@@ -3,16 +3,14 @@ import { Link } from 'react-router-dom'
 import { makeStyles } from '@material-ui/styles'
 import Button from '@material-ui/core/Button'
 import InputBase from '@material-ui/core/InputBase'
-import IconButton from '@material-ui/core/IconButton'
 import Typography from '@material-ui/core/Typography'
 import { AppBar } from '@material-ui/core'
 import Box from '@material-ui/core/Box'
 import Paper from '@material-ui/core/Paper'
 import Popover from '@material-ui/core/Popover'
 import { useTranslation } from 'react-i18next'
-import { FiSearch, FiUser } from 'react-icons/fi'
+import { FiUser } from 'react-icons/fi'
 import Language from './Language'
-import _ from 'lodash'
 
 const useStyles = makeStyles(theme => ({
   appbar: {
