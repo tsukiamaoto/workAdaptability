@@ -63,10 +63,10 @@ const useStyles = makeStyles( theme=>({
 
 const Resume = props => {
   const classes = useStyles()
-  const { loading, error, payload, updateResume, user } = props
+  const { loading,logout, error, payload, updateResume, user } = props
   const [autobiography, uploadAutobiography] = useState()
   const [license, uploadLicense] = useState()
-  const [data, setData] = useState()
+  const [query, setQuery] = useState('')
   const [charts, setCharts] = useState()
   var config = {
     chart: {
@@ -84,6 +84,7 @@ const Resume = props => {
     series: [{data:[]}]
   }
 
+  // load user information and load resume
   useEffect(() => {
     props.loadUser()
     if(props.isLogin) props.loadResume(user)
@@ -96,22 +97,24 @@ const Resume = props => {
 
   // upload interest highcharts
   useEffect(() => {
-    console.log(payload)
     const { interest } = payload
     const interest_values = interest && [interest.artistic, interest.conventional, interest.enterprising, interest.investigative, interest.realistic, interest.social]
     const interest_map = interest_values && interest_values.map(value => value * 100)
     charts && charts.getChart() && charts.getChart().series[0] && charts.getChart().series[0].setData(interest_map,true)
   },[payload])
 
+  function handleLogout() {
+    logout(user)
+  }
 
-  // if(loading)
-  //   return(<span>Loading...</span>)
-  // else if(error)
-  //   return(<span>Error:{error}</span>)
-  // else {
+  if(loading)
+    return(<span>Loading...</span>)
+  else if(error)
+    return(<span>Error:{error}</span>)
+  else {
     return (
       <div className={classes.root}>
-        <Appbar />
+        <Appbar queryJob={setQuery} logout={handleLogout}/>
         <Box display="flex" height={contentTop}/>
         <Box display="flex">
           <Box display="flex" className={classes.intro} flexDirection='column' >
@@ -170,7 +173,7 @@ const Resume = props => {
 
       </div>
     )
-  // }
+  }
 }
 
 
@@ -185,6 +188,7 @@ export default connect(
   }),
   (dispatch) => ({
     loadUser: () => dispatch(actions.fetchUser()),
+    logout: (user) => dispatch(actions.logout(user)),
     loadResume: (user) => dispatch(actions.fetchResume(user)),
     updateResume: (payload) => dispatch(actions.updateResume(payload))
   })

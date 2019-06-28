@@ -13,7 +13,6 @@ import Pagination from 'material-ui-flat-pagination'
 import { connect } from 'react-redux'
 import queryString from 'query-string'
 
-
 const contentTop = 85
 const useStyles = makeStyles(theme => ({
   root: {
@@ -50,20 +49,19 @@ const Home = props => {
   const [tabs, setTabs] = useState(0)
   const [isLoad, setIsLoad] = useState(false)
   const [query, setQuery] = useState('')
-
-
   // const { t, i18n } = useTranslation()
-
   useEffect(() => {
     props.loadUser()
-    if(props.isLogin) props.loadResume(user)
-  },[props.isLogin])
+  },[props.isLogin,])
+
+  useEffect(() => {
+    if(props.isLogin && loading) props.loadResume(user)
+  },)
 
   useEffect(() => {
     const page = queryString.parse(history.location.search).page
-    if(tabs === 0);
+    if(tabs === 0 && query) setQuery('')
     else if(tabs === 1) setQuery(resume.recommend_jobs)
-    console.log(query)
     if(query && query.length)
       queryJob({q: query,page: page})
     else
@@ -84,6 +82,10 @@ const Home = props => {
   function handleLogout (){
     logout(user)
   }
+  function handleQuery(value) {
+    setTabs(0)
+    setQuery(value)
+  }
 
 
   if(loading){
@@ -94,7 +96,7 @@ const Home = props => {
     return (
       <div className={classes.root}>
         <div className={classes.content}>
-          <Appbar queryJob={setQuery} logout={handleLogout}/>
+          <Appbar queryJob={handleQuery} logout={handleLogout}/>
           <Box display='flex' flexDirection='column'>
             <Box dispaly='flex' height={contentTop} />
             <Box display='flex'>
@@ -132,7 +134,6 @@ const Home = props => {
       </div>
     )
   }
-
 }
 
 export default connect(

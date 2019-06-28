@@ -1,6 +1,5 @@
 import * as types from '../actions/types'
 import { combineReducers } from 'redux'
-
 const initialState = {
   isLogin: false,
   isLogout: false,
@@ -13,7 +12,7 @@ const account = combineReducers({
     switch(action.type){
       case types.USER_LOGIN_REQUEST:
         return {
-          ...state
+          ...state,
         }
       case types.USER_LOGIN_SUCCESS:
         return {
@@ -22,6 +21,7 @@ const account = combineReducers({
         }
       case types.USER_LOGIN_FAILURE:
         return {
+          ...state,
           err: action.err
         }
       default:
@@ -42,6 +42,7 @@ const account = combineReducers({
         }
       case types.LOGIN_FAILURE:
         return {
+          ...state,
           error: action.payload.err
         }
       default:
@@ -61,6 +62,7 @@ const account = combineReducers({
         }
       case types.LOGOUT_FAILURE:
         return {
+          ...state,
           error: action.payload.err
         }
       default:

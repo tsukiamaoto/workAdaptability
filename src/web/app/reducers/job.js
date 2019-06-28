@@ -11,8 +11,7 @@ const job = combineReducers({
     switch(action.type){
       case types.JOBS_REQUEST:
         return {
-          ...state,
-          loading: true
+          ...state
         }
       case types.JOBS_SUCCESS:
         return {
@@ -22,7 +21,8 @@ const job = combineReducers({
         }
       case types.JOBS_FAILURE:
         return {
-          error: true
+          ...state,
+          error: action.payload.err
         }
       default:
         return state

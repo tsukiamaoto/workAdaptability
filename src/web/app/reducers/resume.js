@@ -12,8 +12,7 @@ const resume = (state = initialState, action) => {
     case types.RESUME_REQUEST:
     case types.RESUME_UPDATE_REQUEST:
       return {
-        ...state,
-        loading: true
+        ...state
       }
     case types.RESUME_SUCCESS:
     case types.RESUME_UPDATE_SUCCESS:
@@ -26,7 +25,7 @@ const resume = (state = initialState, action) => {
     case types.RESUME_UPDATE_FAILURE:
       return {
         ...state,
-        error: true
+        error: action.payload.err
       }
     default:
       return state

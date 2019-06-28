@@ -11,8 +11,7 @@ const homePage = (state = initialState, action) => {
     case types.HOME_REQUEST:
     case types.JOBS_QUERY:
       return {
-        ...state,
-        loading: true
+        ...state
       }
     case types.HOME_SUCCESS:
     case types.JOBS_QUERY_SUCCESS:
@@ -24,6 +23,7 @@ const homePage = (state = initialState, action) => {
     case types.HOME_FAILURE:
     case types.JOBS_QUERY_FAILURE:
       return {
+        ...state,
         error: action.error
       }
     default:
