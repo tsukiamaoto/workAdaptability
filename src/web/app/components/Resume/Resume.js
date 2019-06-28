@@ -6,9 +6,9 @@ import Box from '@material-ui/core/Box'
 import Appbar from '../Common/Appbar'
 import ReactHighcharts from 'react-highcharts'
 import HighchartsMore from 'highcharts-more'
-import { FiMail, FiPhone} from 'react-icons/fi'
 import License from './License'
 import Autobiography from './Autobiography'
+import ListJobs from '../Common/ListJobs'
 import { connect } from 'react-redux'
 import * as actions from '../../actions'
 
@@ -109,6 +109,7 @@ const Resume = props => {
     logout(user)
   }
 
+  console.log(payload)
   if(loading)
     return(<span>Loading...</span>)
   else if(error)
@@ -148,21 +149,11 @@ const Resume = props => {
 
             <Box display="flex" className={classes.icons} mt={4} flexDirection='column'>
               <Box display="flex" alignItems='center'>
-                <Box display="flex">
-                  <IconButton><FiMail/></IconButton>
-                </Box>
-                <Box display="flex">
-                  <Typography>Email</Typography>
-                </Box>
+                {payload && payload.hobbies && <ListJobs title="興趣列表" recommends={payload.hobbies} switch={false}/>}
               </Box>
 
               <Box display="flex" alignItems='center'>
-                <Box display="flex">
-                  <IconButton><FiPhone/></IconButton>
-                </Box>
-                <Box display="flex">
-                  <Typography>Phone</Typography>
-                </Box>
+                {payload && payload.skills && <ListJobs title="專長列表" recommends={payload.skills} switch={false}/>}
               </Box>
             </Box>
           </Box>

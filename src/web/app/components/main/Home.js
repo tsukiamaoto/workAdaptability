@@ -7,7 +7,7 @@ import Tab from '@material-ui/core/Tab'
 import * as actions from '../../actions'
 import Appbar from '../Common/Appbar'
 import Table from './Table'
-import RecommendList from './RecommendList'
+import ListJobs from '../Common/ListJobs'
 import Pagination from 'material-ui-flat-pagination'
 // import { useTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
@@ -114,7 +114,7 @@ const Home = props => {
               </Paper>
               <Box width='5%'/>
               <Box width='20%' display='flex' alignSelf='flex-start'>
-                { resume && resume.recommend_jobs && <RecommendList recommends={resume.recommend_jobs} /> }
+                { resume && resume.recommend_jobs && <ListJobs title="職業推薦" recommends={resume.recommend_jobs} switch={true} /> }
                 <Box width='10%'/>
               </Box>
             </Box>
