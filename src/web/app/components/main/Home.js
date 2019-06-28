@@ -114,7 +114,7 @@ const Home = props => {
               </Paper>
               <Box width='5%'/>
               <Box width='20%' display='flex' alignSelf='flex-start'>
-                <RecommendList recommends={resume.recommend_jobs}/>
+                { resume && resume.recommend_jobs && <RecommendList recommends={resume.recommend_jobs} /> }
                 <Box width='10%'/>
               </Box>
             </Box>

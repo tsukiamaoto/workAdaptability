@@ -83,7 +83,7 @@ const Resume = props => {
     },
     series: [{data:[]}]
   }
-
+  // console.log(resume)
   // load user information and load resume
   useEffect(() => {
     props.loadUser()
@@ -97,10 +97,12 @@ const Resume = props => {
 
   // upload interest highcharts
   useEffect(() => {
-    const { interest } = payload
-    const interest_values = interest && [interest.artistic, interest.conventional, interest.enterprising, interest.investigative, interest.realistic, interest.social]
-    const interest_map = interest_values && interest_values.map(value => value * 100)
-    charts && charts.getChart() && charts.getChart().series[0] && charts.getChart().series[0].setData(interest_map,true)
+    if( payload && payload.interest) {
+      const { interest } = payload
+      const interest_values = interest && [interest.artistic, interest.conventional, interest.enterprising, interest.investigative, interest.realistic, interest.social]
+      const interest_map = interest_values && interest_values.map(value => value * 100)
+      charts && charts.getChart() && charts.getChart().series[0] && charts.getChart().series[0].setData(interest_map,true)
+    }
   },[payload])
 
   function handleLogout() {
