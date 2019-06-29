@@ -12,8 +12,9 @@ const useStyles = makeStyles( theme =>({
     opacity: 0.95
   },
   license: {
-    minWidth: '30vw',
+    minWidth: '10vw',
     maxHeight: '90%',
+    maxWidth: '40vw',
     width: '30vw',
     height: '60%',
     margin: theme.spacing(2),

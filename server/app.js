@@ -9,7 +9,7 @@ const bodyParser = require('body-parser')
 const resumesRouter = require('./controller/resume');
 const usersRouter = require('./controller/users');
 const jobsRouter = require('./controller/job');
-const convertapi = require('convertapi')('CfYGjErF2UtaiBn7');
+const convertapi = require('convertapi')('0Jh8kqHOT04ytSMl');
 const Multer = require('multer');
 const mongoose = require('mongoose');
 const hash = crypto.createHash('sha256');
@@ -25,6 +25,8 @@ app.use(cors())
 mongoose.connect(process.env.mongoDB,{useNewUrlParser : true, useFindAndModify: false});
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: false })); // for parsing application/x-www-form-urlencoded
+app.set('views',path.join(__dirname,'views'));
+app.set('view engine','jade');
 
 const storage = Multer.diskStorage({
   destination: (req, file, cb) => {
@@ -42,18 +44,17 @@ const multer = Multer({
   storage: storage
 });
 
-
 // Uploads file to DB
-app.post('/resume/upload', multer.any(), (req, res,next) => {
-  const path = './public/uploads/pdf/'
-
-  if (!req.files) {
-    return next();
-  }
+app.post('/resume/upload',/*multer.any(),*/ (req, res,next) => {
+  const path = './public/autobiography/' + req.body.file +'.pdf'
+  // if (!req.files) {
+  //   return next();
+  // }
 
   // pdf convert to txt
   convertapi.convert('txt', {
-    File: path + req.files[0].filename,
+    // File: path + req.files[0].filename,
+    File: path
   }, 'pdf').then(function (result) {
     result.saveFiles('./public/uploads/out.txt');
     console.log('transfer finished')
@@ -103,7 +104,8 @@ app.post('/resume/upload', multer.any(), (req, res,next) => {
         social: interest.weight[5]
       }
       const resume1 = new Resume({
-        autobiography: req.files[0].filename,
+        // autobiography: req.files[0].filename,
+        autobiography: req.body.file,
         interest_symbol: interest.interest_symbol,
         hobbies: interest.user_hobby,
         skills: job.skills,
@@ -115,7 +117,7 @@ app.post('/resume/upload', multer.any(), (req, res,next) => {
         resume1.interest = interest.id;
         resume1.save().then(resume => {
           try {
-            User.findOneAndUpdate({isLogin: true},{$set:{resume: mongoose.Types.ObjectId(resume.id)}},{new: true})
+            User.findOneAndUpdate(req.body.user,{$set:{resume: mongoose.Types.ObjectId(resume.id)}},{new: true})
               .populate({ path: 'resume', model: Resume,
                 populate: {
                   path: 'interest', model: Interest
@@ -183,7 +185,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.send('error');
 });
 
 const port = process.env.port || 7020

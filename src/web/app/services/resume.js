@@ -15,14 +15,20 @@ const fetchResume = async action => {
 const updateResume = async action => {
   const url = '/resume/upload'
   const {autobiography, license,user} = action.payload
-  var fd = new FormData()
-  fd.append('user',user)
-  fd.append('autobiography', autobiography)
-  fd.append('license', license)
-
+  // var fd = new FormData()
+  // fd.append('user',user)
+  // fd.append('autobiography', autobiography)
+  // fd.append('license', license)
   const res = await fetch( url, {
     method: 'POST',
-    body: fd
+    // body: fd
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      file: autobiography,
+      user: user
+    })
   })
   const json = await res.json()
   return json

@@ -27,7 +27,7 @@ const useStyles = makeStyles( theme=>({
     marginTop: theme.spacing(1),
   },
   intro: {
-    width: '40%',
+    width: '25%',
     padding: theme.spacing(3),
     background: theme.palette.primary.white,
     opacity: 0.95
@@ -48,7 +48,8 @@ const useStyles = makeStyles( theme=>({
     width: '80%',
   },
   autobiography: {
-    width: '45vw',
+    minWidth: '40vw',
+    maxWidth: '45vw',
     borderColor: '#0288d1',
     paddingLeft: '1vw',
     paddingRight: '1vw',
@@ -64,7 +65,8 @@ const useStyles = makeStyles( theme=>({
 const Resume = props => {
   const classes = useStyles()
   const { loading,logout, error, payload, updateResume, user } = props
-  const [autobiography, uploadAutobiography] = useState()
+  const [autobiography, uploadAutobiography] = useState('')
+  const [isUploaded, setIsUploaded] = useState(false)
   const [license, uploadLicense] = useState()
   const [query, setQuery] = useState('')
   const [charts, setCharts] = useState()
@@ -83,7 +85,7 @@ const Resume = props => {
     },
     series: [{data:[]}]
   }
-  // console.log(resume)
+
   // load user information and load resume
   useEffect(() => {
     props.loadUser()
@@ -92,16 +94,21 @@ const Resume = props => {
 
   // update resume
   useEffect(() => {
-    updateResume({autobiography,license,user})
+    if(autobiography.length){
+      setIsUploaded(true)
+      updateResume({autobiography,license,user})
+    }
   },[autobiography,license])
 
   // upload interest highcharts
   useEffect(() => {
     if( payload && payload.interest) {
+      console.log(payload)
+      setIsUploaded(false)
       const { interest } = payload
       const interest_values = interest && [interest.artistic, interest.conventional, interest.enterprising, interest.investigative, interest.realistic, interest.social]
       const interest_map = interest_values && interest_values.map(value => value * 100)
-      charts && charts.getChart() && charts.getChart().series[0] && charts.getChart().series[0].setData(interest_map,true)
+      charts && interest_map && charts.getChart().series[0].setData(interest_map,true)
     }
   },[payload])
 
@@ -109,7 +116,6 @@ const Resume = props => {
     logout(user)
   }
 
-  console.log(payload)
   if(loading)
     return(<span>Loading...</span>)
   else if(error)
@@ -159,11 +165,12 @@ const Resume = props => {
           </Box>
 
           <Box display="flex" className={classes.autobiography} >
-            <Autobiography uploadAutobiography={uploadAutobiography}/>
+            <Autobiography isUploaded={isUploaded} autobiography={payload.autobiography} uploadAutobiography={uploadAutobiography}/>
           </Box>
-          <License uploadLicense={uploadLicense}/>
+          <Box display='flex' className={classes.license}>
+            <License uploadLicense={uploadLicense}/>
+          </Box>
         </Box>
-
       </div>
     )
   }

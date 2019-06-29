@@ -13,7 +13,7 @@ const useStyles = makeStyles(theme => ({
   listItem: {
     paddingBottom: theme.spacing(4)
   },
-  listItemTe:{
+  listItemText:{
     color: theme.palette.primary.main
   }
 }))
